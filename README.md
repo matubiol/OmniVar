@@ -39,7 +39,7 @@
     </tr>
     <tr>
       <td><strong>1. Quality Control & Alignment</strong></td>
-      <td><code>FastQC</code>, <code>Trimmomatic</code>, <code>BWA-MEM</code>, <code>Samtools</code></td>
+      <td><code>FastQC</code>, <code>Fastp</code>, <code>BWA-MEM</code>, <code>Samtools</code></td>
       <td>Raw reads QC, adapter trimming, high-precision GRCh37 genome alignment, and post-alignment processing (BQSR, deduplication, sorting).</td>
     </tr>
     <tr>
