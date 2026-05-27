@@ -1,0 +1,69 @@
+# ==========================================
+# Project directories and scripts
+# ==========================================
+proj:
+  proj_dir: "/path/to/project"
+  raw_dir: "/path/to/project/data/RawData"
+  intervals: "data/Panel/regions.bed"  
+  ref_dir: "/path/to/project/resources"
+  opt_dir: "/path/to/project/opt"
+  src_dir: "/path/to/project/src"
+
+# ==========================================
+# Reference files (in ref_dir)
+# ==========================================
+refs:
+  genome: "Genomes/GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa"
+  gtf: "Genomes/GRCh37/Homo_sapiens.GRCh37.87.chr.gtf.gz"
+  dbsnp: "BaseRecalibration/dbsnp_138.b37.vcf.gz"
+  mills: "BaseRecalibration/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"
+  high_conf: "BaseRecalibration/1000G_phase1.snps.high_confidence.b37.vcf.gz"
+  gnomad: "VariantCalling/gnomAD/af-only-gnomad.raw.sites.vcf.gz"
+  pon: "VariantCalling/gnomAD/Mutect2-exome-panel.vcf.gz"  
+  clinvar: "VariantCalling/Annotation/clinvar.vcf.gz"
+  civic: "VariantCalling/Annotation/CIVIC_01-Apr-2026-AcceptedAndSubmittedClinicalEvidenceSummaries.tsv"
+  cyto: "VariantCalling/CNV/cytoBand.txt.gz"
+
+# ==========================================
+# Containers and environments (in opt_dir)
+# ==========================================
+containers:
+  gatk: "apptainer/GATK_v4.6.2.0.sif"
+  manta: "apptainer/Manta_v1.6.0.sif"
+  cnvkit: "apptainer/CNVkit_v0.9.13.sif"
+envs:
+  vardict: "conda/vardict-java_v.1.8.3.yml"
+  lumpy: "conda/lumpy-sv_v0.3.1.yml"
+  python: "conda/Python_v3.12.3.yml"
+
+# ==========================================
+# Pipeline scripts (in src_dir)
+# ==========================================
+smk:
+  qc: "Snakemake/01_RawReads_QC.smk"
+  align: "Snakemake/02_Alignment.smk"
+  vc_gatk: "Snakemake/03_GATK_VC.smk"
+  vc_vardict: "Snakemake/03_VarDict.smk"
+  sv_manta: "Snakemake/04_Manta_SV.smk"
+  sv_lumpy: "Snakemake/04_Lumpy_SV.smk"
+  cnv_cnvkit: "Snakemake/05_CNVkit.smk"
+  cnv_gatk: "Snakemake/05_GATK_CNV.smk"
+post:
+  snpeff_report: "Post_processing/03_SnpEff_report.py"
+  SV_gene_ann: "Post_processing/04.1_Gene_Ann_SV.py"
+  SV_CIVIC_ann: "Post_processing/04.2_CIVic_Ann_SV.R"
+  CNV_gene_ann: "Post_processing/05_Gene_Ann_CNV.py"
+
+# ==========================================
+# Pipeline settings
+# ==========================================
+calls: ['small', 'sv'] # Options: "small", "sv", "cnv", "all"
+callers:
+  small: "both" # Options: "gatk", "vardict", "both"
+  sv: "both" # Options: "manta", "lumpy", "both"
+  cnv: "both" # Options: "cnvkit", "gatk_cnv", "both"
+mutect_mode: "moderate" # Options: "default", "moderate", "relaxed"
+snpeff_db: "GRCh37.75" # Options: "GRCh37.75", "GRCh38.115", "GRCh38.99", "hg19kg", "hg38kg", "testHg19ChrM" or a custom database
+vc_min_depth: 8
+sv_min_support: 3
+pon_samples: ['Sample1', 'Sample2'] # Samples to include in panel of normals for CNV
