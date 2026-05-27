@@ -13,7 +13,7 @@
 
 <hr />
 
-<h2>📋 Overview</h2>
+<h2> Overview</h2>
 <p>
   <code>Hemato_Somatic_Variants</code> is a production-ready, high-throughput bioinformatic workflow designed specifically for the analysis of Next-Generation Sequencing (NGS) data from hematological malignancies. Somatic variant calling in liquid tumors introduces unique challenges, such as low tumor purity, subclonal mutations, and highly recurrent structural fusions. 
 </p>
@@ -67,7 +67,7 @@
 
 <hr />
 
-<h2>📦 Prerequisites & Environment Setup</h2>
+<h2> Prerequisites & Environment Setup</h2>
 <p>The pipeline relies on <strong>Conda / Mamba</strong> for automated package management and environment isolation, alongside support for HPC cluster environments via <strong>Environment Modules (Lmod/Tcl)</strong>.</p>
 
 <details>
@@ -123,7 +123,7 @@ sv_min_support: 3</code></pre>
 
 <hr />
 
-<h2>🏃 Running the Pipeline</h2>
+<h2> Running the Pipeline</h2>
 
 <h3>Local Execution</h3>
 <p>To run the pipeline locally using 8 cores:</p>
@@ -135,7 +135,7 @@ sv_min_support: 3</code></pre>
 
 <hr />
 
-<h2>📊 Outputs & Automated Reports</h2>
+<h2> Outputs & Automated Reports</h2>
 <p>Results are systematically structured inside the <code>results/</code> directory. The core actionable outputs of the pipeline include:</p>
 
 <ul>
@@ -151,7 +151,7 @@ sv_min_support: 3</code></pre>
 
 <hr />
 
-<h2>📄 License</h2>
+<h2> License</h2>
 <p>This project is licensed under the <strong>MIT License</strong> - see the <a href="LICENSE">LICENSE</a> file for details. It grants free permission to use, modify, distribute, and commercially exploit the software, provided the original copyright notice is preserved.</p>
 
 <hr />
