@@ -1,6 +1,6 @@
 <div align="center">
-  <h1> Hemato-Oncology pipeline </h1>
-  <p><strong>A Comprehensive High-Throughput Snakemake Pipeline for Hemato-Oncology NGS Panels</strong></p>
+  <h1> OmniVar </h1>
+  <p><strong>A Comprehensive High-Throughput Snakemake Pipeline for Somatic NGS Panels</strong></p>
 
   <p>
     <img src="https://img.shields.io/badge/Workflow-Snakemake-emerald?style=flat-square&logo=snakemake" alt="Snakemake">
@@ -13,9 +13,11 @@
 
 <hr />
 
+<hr />
+
 <h2> Overview</h2>
 <p>
-  <code>Hemato_Somatic_Variants</code> is a production-ready, high-throughput bioinformatic workflow designed specifically for the analysis of Next-Generation Sequencing (NGS) data from hematological malignancies. Somatic variant calling in liquid tumors introduces unique challenges, such as low tumor purity, subclonal mutations, and highly recurrent structural fusions. 
+  <code>OmniVar</code> is a high-throughput bioinformatic workflow designed for the analysis of Next-Generation Sequencing (NGS) data in clinical oncology. Whether applied to liquid biopsies or solid tumor tissue, somatic variant calling introduces unique challenges such as low tumor purity, subclonal mutations, and complex structural rearrangements.
 </p>
 <p>
   This pipeline automates the entire process from reference infrastructure setup to fully annotated, clinical-grade variant reports by integrating state-of-the-art tools for small variants (SNVs/Indels), structural variations (SVs), and copy number alterations (CNVs).
@@ -33,34 +35,34 @@
   </thead>
   <tbody>
     <tr>
-      <td><strong>0. Reference Build</strong></td>
-      <td><code>BWA-MEM2</code>, <code>GATK</code>, <code>BCFtools</code>, <code>SnpEff</code></td>
-      <td>Automated script to build indexes, download dbsnp/gnomAD, filter targeted panel beds, and pre-process GATK interval lists.</td>
+      <td><strong>0. Reference Preparation</strong></td>
+      <td></td>
+      <td>Harmonizes the chromosome naming convention of the intervals bed file with that of the reference fasta (e.g. "chr1" vs "1").</td>
     </tr>
     <tr>
-      <td><strong>1. Quality Control & Alignment</strong></td>
-      <td><code>FastQC</code>, <code>Fastp</code>, <code>BWA-MEM</code>, <code>Samtools</code></td>
-      <td>Raw reads QC, adapter trimming, high-precision GRCh37 genome alignment, and post-alignment processing (BQSR, deduplication, sorting).</td>
+      <td><strong>1. Quality Control </strong></td>
+      <td><code>FastQC</code>, <code>Fastp</code>, <code>MultiQC</code></td>
+      <td>Quality control on raw DNA-seq reads, including FastQC for quality assessment, Fastp for trimming and filtering, and MultiQC for aggregating QC reports.</td>
     </tr>
     <tr>
-      <td><strong>2. Small Somatic Variants</strong></td>
-      <td><code>GATK Mutect2</code>, <code>VarDict</code></td>
-      <td>Dual-caller strategy optimizing sensitivity and specificity for low-VAF (Variant Allele Frequency) somatic mutations typical in hemato-oncology samples.</td>
+      <td><strong>2. Alignment </strong></td>
+      <td><code>BWA-MEM2</code>, <code>GATK</code>, <code>MultiQC</code></td>
+      <td>Aligns the processed reads to the reference genome using BWA-MEM2 and performs subsequent processing with GATK.</td>
     </tr>
     <tr>
-      <td><strong>3. Structural Variants & Fusions</strong></td>
+      <td><strong>3. Small Somatic Variants</strong></td>
+      <td><code>GATK Mutect2</code>, <code>VarDict</code>, <code>SnpEff</code></td>
+      <td>Somatic variant calling using GATK Mutect2 and VarDict, followed by annotation with SnpEff and ClinVar. It includes configurable parameters for Mutect2 to allow users to adjust sensitivity and specificity based on their needs.</td>
+    </tr>
+    <tr>
+      <td><strong>4. Structural Variants & Fusions</strong></td>
       <td><code>Manta</code>, <code>Lumpy</code></td>
-      <td>Comprehensive detection of structural anomalies, chromosomal rearrangements, and key oncogenic gene fusions (e.g., <i>BCR::ABL1</i>, <i>KMT2A</i> rearrangements).</td>
+      <td>Detection of genomic rearrangements, translocations, and pathologically relevant gene fusions, followed by gene annotation and clinical annotation using the CIViC database.</td>
     </tr>
     <tr>
-      <td><strong>4. Copy Number Profiling (CNV)</strong></td>
-      <td><code>CNVkit</code>, <code>GATK CNV</code></td>
-      <td>Accurate profiling of copy number alterations (amplifications and deletions) tailored for targeted gene panels using preprocessed target intervals.</td>
-    </tr>
-    <tr>
-      <td><strong>5. Automated Clinical Reporting</strong></td>
-      <td><code>SnpEff</code>, <code>ClinVar</code>, <code>CIViC Database</code></td>
-      <td>Custom downstream annotation filtering out synonymous variants, applying ACMG-like prioritizing tiers, and mapping fusions to actionable clinical evidence.</td>
+      <td><strong>5. Copy Number Profiling</strong></td>
+      <td><code>CNVkit</code>, <code>GATK</code></td>
+      <td>Copy number profiling using CNVkit and GATK CNV, including panel of normals creation, CNV calling, and annotation with gene information. .</td>
     </tr>
   </tbody>
 </table>
@@ -68,19 +70,19 @@
 <hr />
 
 <h2> Prerequisites & Environment Setup</h2>
-<p>The pipeline relies on <strong>Conda / Mamba</strong> for automated package management and environment isolation, alongside support for HPC cluster environments via <strong>Environment Modules (Lmod/Tcl)</strong>.</p>
+<p>The pipeline relies on <strong>Conda / Mamba</strong> for automated package management and environment isolation, alongside support for HPC cluster environments via <strong>Environment Modules</strong>.</p>
 
 <details>
   <summary><b>Click to expand installation steps</b></summary>
   
   <h3>1. Clone the Repository</h3>
-  <pre><code>git clone https://github.com/your-username/Hemato_Somatic_Variants.git
-cd Hemato_Somatic_Variants</code></pre>
+  <pre><code>git clone https://git.iconcologia.net/72181407R/OmniVar.git
+cd OmniVar</code></pre>
 
   <h3>2. Install Conda/Mamba & Snakemake</h3>
   <p>Ensure you have Mamba installed. Then create the base execution environment:</p>
   <pre><code>mamba create -c conda-forge -c bioconda -n snakemake snakemake pandas openpyxl
-conda activate snakemake</code></pre>
+mamba activate snakemake</code></pre>
 </details>
 
 <hr />
@@ -94,11 +96,11 @@ conda activate snakemake</code></pre>
 </p>
 
 <ol>
-  <li>Open <code>scripts/00_BuildRef_GRCh37.sh</code> and configure your desired output directory (<code>OUTDIR</code>) along with your targeted panel regions (<code>intervals.bed</code>).</li>
+  <li>Open <code>src/BuildRef_GRCh37.sh</code> and configure your desired output directory (<code>OUTDIR</code>).</li>
   <li>Run the script using an environment with access to cluster modules:</li>
 </ol>
 
-<pre><code>bash scripts/00_BuildRef_GRCh37.sh</code></pre>
+<pre><code>bash src/BuildRef_GRCh37.sh</code></pre>
 
 <p>
   This script will automatically index the reference genome, build the sequence dictionaries, intersect and format the GTF annotations with gene names instead of Ensembl IDs, filter gnomAD to your targeted regions via <code>bcftools</code>, pre-process GATK CNV target intervals, and cache the <strong>CIViC Database</strong>.
@@ -107,47 +109,17 @@ conda activate snakemake</code></pre>
 <hr />
 
 <h2> Configuration</h2>
-<p>Edit the <code>config/config.yaml</code> file to point to the resource directory generated by your build script:</p>
-
-<pre><code># Reference and Databases (GRCh37)
-reference_genome: "/path/to/resources/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa"
-gtf_annotation: "/path/to/resources/Homo_sapiens.GRCh37.87.chr.mod.gtf"
-civic_database: "/path/to/resources/Annotation/01-Apr-2026-AcceptedAndSubmittedClinicalEvidenceSummaries.tsv"
-gnomad_vcf: "/path/to/resources/VariantCalling/gnomad.oncokit.vcf.gz"
-
-# Variant Filtering Thresholds
-min_depth: 8
-sv_min_support: 3</code></pre>
-
+<p>Edit the <code>config.yml</code> file to point to the resource directory generated by your build script:</p>
 <p>Configure your sample list in <code>config/samples.tsv</code> using a standard tab-separated format containing your sample identifiers and raw FASTQ paths.</p>
 
 <hr />
 
 <h2> Running the Pipeline</h2>
 
-<h3>Local Execution</h3>
+<h3>Execution</h3>
 <p>To run the pipeline locally using 8 cores:</p>
-<pre><code>snakemake --cores 8 --use-conda</code></pre>
-
-<h3>HPC Cluster Execution (Slurm)</h3>
-<p>The workflow is natively optimized for cluster scheduling. To submit jobs to a Slurm partition using Environment Modules:</p>
-<pre><code>snakemake --cluster "sbatch --partition={resources.slurm_partition} --account={resources.slurm_account} --mem={resources.mem_mb} --cpus-per-task={threads}" --jobs 10 --use-conda --use-envmodules</code></pre>
-
-<hr />
-
-<h2> Outputs & Automated Reports</h2>
-<p>Results are systematically structured inside the <code>results/</code> directory. The core actionable outputs of the pipeline include:</p>
-
-<ul>
-  <li>
-    <strong>Small Variants Tier Report (<code>results/.../01_SmallVariants/GATK/02_Annotated/{sample}_report.tsv</code>):</strong> 
-    Filtered somatic variants classified into pathogenic tiers based on ClinVar status, variant impacts, and molecular effects. It includes an automated rescue protocol for critical hematological insertion/duplication drivers (e.g., <i>FLT3-ITD</i>) and splice regions.
-  </li>
-  <li>
-    <strong>Clinical SV/Fusion Annotation (<code>results/.../02_StructuralVariants/Manta/02_Annotated/{sample}_ann_civic.xlsx</code>):</strong> 
-    Automated Excel summary mapping structural variants and fusions against the <strong>CIViC database</strong>, pre-filtered for a curated panel of 29 critical hemato-oncology genes (including <code>ABL1</code>, <code>BCR</code>, <code>JAK2</code>, <code>KMT2A</code>, <code>RUNX1</code>, <code>NPM1</code>, and <code>TP53</code>).
-  </li>
-</ul>
+<pre><code>snakemake -s Snakefile.smk --configfile config.yml --profile slurm</code></pre>
+<p>Slurm profiles can be configured in <code>config/slurm/</code> to specify partition, account, memory, and other cluster-specific parameters. Other options can be specified as needed. Find more information in the <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html#defining-global-profiles">Snakemake documentation</a>.</p>
 
 <hr />
 
@@ -155,6 +127,11 @@ sv_min_support: 3</code></pre>
 <p>This project is licensed under the <strong>MIT License</strong> - see the <a href="LICENSE">LICENSE</a> file for details. It grants free permission to use, modify, distribute, and commercially exploit the software, provided the original copyright notice is preserved.</p>
 
 <hr />
+
+<div align="center">
+  <p>Developed for Hemato-Oncology Research Groups. For issues, bug reports, or feature requests, please open a GitHub Issue.</p>
+</div>
+
 
 <div align="center">
   <p>Developed for Hemato-Oncology Research Groups. For issues, bug reports, or feature requests, please open a GitHub Issue.</p>
