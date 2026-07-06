@@ -129,5 +129,5 @@ mamba activate snakemake</code></pre>
 <hr />
 
 <div align="center">
-  <p>Developed for Hemato-Oncology Research Groups. For issues, bug reports, or feature requests, please open a GitHub Issue.</p>
+  <p>Developed for Oncology Research Groups. For issues, bug reports, or feature requests, please open a GitHub Issue.</p>
 </div>
